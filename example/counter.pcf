@@ -1,0 +1,10 @@
+set_io q[0] 27
+set_io q[1] 25
+set_io q[2] 21
+set_io q[3] 23
+set_io q[4] 26
+set_io q[5] 11
+set_io q[6] 37
+
+set_io i_clk 35
+set_io i_rst 10
