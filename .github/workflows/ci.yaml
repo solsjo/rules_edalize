@@ -21,6 +21,6 @@ jobs:
       with:
         path: "~/.cache/bazel"
         key: bazel
-    - run: |
+    - run: >
            bazelisk run //example:example;
-      bazelisk build //example:build
+           bazelisk build //example:build
