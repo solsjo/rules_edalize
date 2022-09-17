@@ -46,8 +46,8 @@ def main():
     curr_dir = os.path.realpath(os.getcwd())
     output_base_path = re.match("(.*/_bazel_[a-zA-Z0-9]*/[a-zA-Z0-9]*)", curr_dir).groups()[0]
     root_path = os.path.dirname(os.readlink(root))
-    os.environ["EDALIZE_LAUNCHER_EXTRA_FLAGS"] = f"-v {output_base_path}:{output_base_path} -v {root_path}:{root_path}"
-
+    sym_root_path = os.path.dirname(os.path.realpath(root))
+    os.environ["EDALIZE_LAUNCHER_EXTRA_FLAGS"] = f"-v {output_base_path}:{output_base_path} -v {root_path}:{root_path} -v {sym_root_path}:{sym_root_path}"
     try:
         lint.build()
     except RuntimeError as e:
