@@ -1,5 +1,6 @@
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 load("@py_deps//:requirements.bzl", "requirement")
+load("//example:edalize.bzl", "edalize")
 
 py_binary(
     name = "example",
@@ -13,7 +14,16 @@ py_binary(
 	"//:README.md",
     ],
     env = {"EDALIZE_LAUNCHER": "$(location :el_docker)"},
-    args = ["$(location counter.v) $(location counter.pcf) $(location //:README.md)"],
+    args = ["--input=$(location counter.v) --input=$(location counter.pcf) --input=$(location //:README.md) --output=dont_care"],
+)
+
+edalize(
+    name = "build",
+    srcs = [
+        "counter.v",
+        "counter.pcf",
+    ],
+    spec = ":example",
 )
 
 py_binary(

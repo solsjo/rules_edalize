@@ -3,11 +3,21 @@ from edalize import get_flow
 import os
 import re
 
-def main():
+import argparse
 
-    counter_v = sys.argv[1]
-    counter_pcf = sys.argv[2]
-    root = sys.argv[3]
+def setup_argparse():
+    parser = argparse.ArgumentParser(description='Chart generator')
+    parser.add_argument('--input', required=True, action="append")
+    parser.add_argument('--output', required=True, action="append")
+    return parser.parse_args()
+
+
+def main():
+    args = setup_argparse()
+
+    counter_v = args.input[0]
+    counter_pcf = args.input[1]
+    root = args.input[2]
     Flow = get_flow("lint") # Get the class for the lint flow
     
     edam = {} #Create an initial EDAM file
