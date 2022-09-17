@@ -14,10 +14,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Install gnat
-      run: sudo apt-get install -y gnat
-    - name: Install llvm
-      run: sudo apt-get install -y llvm
     - uses: actions/checkout@v2
     - uses: mishas/setup-bazelisk-action@v1
     - name: Mount bazel cache  # Optional
@@ -25,4 +21,6 @@ jobs:
       with:
         path: "~/.cache/bazel"
         key: bazel
-    - run: bazelisk run //example:example
+    - run: |
+           bazelisk run //example:example;
+      bazelisk build //example:build

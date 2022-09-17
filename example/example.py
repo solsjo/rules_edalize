@@ -4,11 +4,13 @@ import os
 import re
 
 import argparse
+import shutil
 
 def setup_argparse():
     parser = argparse.ArgumentParser(description='Chart generator')
     parser.add_argument('--input', required=True, action="append")
     parser.add_argument('--output', required=True, action="append")
+    parser.add_argument('--root', required=True)
     return parser.parse_args()
 
 
@@ -17,7 +19,14 @@ def main():
 
     counter_v = args.input[0]
     counter_pcf = args.input[1]
-    root = args.input[2]
+    root = args.root
+
+    curr_dir = os.path.realpath(os.getcwd())
+    output_base_path = re.match("(.*/_bazel_[a-zA-Z0-9]*/[a-zA-Z0-9]*)", curr_dir).groups()[0]
+    root_path = os.path.dirname(os.readlink(root))
+    sym_root_path = os.path.dirname(os.path.realpath(root))
+    os.environ["EDALIZE_LAUNCHER_EXTRA_FLAGS"] = f"-v {output_base_path}:{output_base_path} -v {root_path}:{root_path} -v {sym_root_path}:{sym_root_path}"
+
     Flow = get_flow("lint") # Get the class for the lint flow
     
     edam = {} #Create an initial EDAM file
@@ -43,11 +52,6 @@ def main():
     
     #Build the design. In the case of the linter flow this means compile and run linter
 
-    curr_dir = os.path.realpath(os.getcwd())
-    output_base_path = re.match("(.*/_bazel_[a-zA-Z0-9]*/[a-zA-Z0-9]*)", curr_dir).groups()[0]
-    root_path = os.path.dirname(os.readlink(root))
-    sym_root_path = os.path.dirname(os.path.realpath(root))
-    os.environ["EDALIZE_LAUNCHER_EXTRA_FLAGS"] = f"-v {output_base_path}:{output_base_path} -v {root_path}:{root_path} -v {sym_root_path}:{sym_root_path}"
     try:
         lint.build()
     except RuntimeError as e:
@@ -70,6 +74,8 @@ def main():
     icestorm.build()
     
     #Now we have a bitstream
+    for out in args.output:
+        shutil.copy2(os.path.basename(out), out)
 
 if __name__ == "__main__":
     main()

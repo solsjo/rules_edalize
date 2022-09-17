@@ -14,7 +14,7 @@ py_binary(
 	"//:README.md",
     ],
     env = {"EDALIZE_LAUNCHER": "$(location :el_docker)"},
-    args = ["--input=$(location counter.v) --input=$(location counter.pcf) --input=$(location //:README.md) --output=dont_care"],
+    args = ["--input=$(location counter.v) --input=$(location counter.pcf) --root=$(location //:README.md) --output=../counter_test.vc"],
 )
 
 edalize(
@@ -24,6 +24,7 @@ edalize(
         "counter.pcf",
     ],
     spec = ":example",
+    outs = ["counter_test.vc"]
 )
 
 py_binary(

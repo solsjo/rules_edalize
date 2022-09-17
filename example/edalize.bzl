@@ -2,12 +2,11 @@ def _edalize_impl(ctx):
 
     args = ctx.actions.args()
 
-    outputs = []
-    outputs.append(ctx.actions.declare_file("counter.bin"))
+    outputs = [ctx.actions.declare_file(name) for name in ctx.attr.outs]
     
     args.add_all(ctx.files.srcs, format_each="--input=%s")
 
-    args.add("--input=" + ctx.files._root[0].path)
+    args.add("--root=" + ctx.files._root[0].path)
 
     args.add_all(outputs, format_each="--output=%s")
     
@@ -31,6 +30,7 @@ edalize = rule(
     attrs = {
         "srcs": attr.label_list(mandatory = True, allow_files=True),
         "spec" : attr.label(default="//example:example", executable=True, cfg="exec"),
+        "outs": attr.string_list(mandatory = True),
        "_wrapper": attr.label(
             default="//example:el_docker",
             executable=True, cfg="exec"
